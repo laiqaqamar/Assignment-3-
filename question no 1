@@ -1,0 +1,56 @@
+#include <iostream>
+
+// Abstract base class
+class Shape {
+public:
+    // Pure virtual function for calculating area
+    virtual double calculateArea() const = 0;
+
+    // Virtual destructor (important when dealing with polymorphism)
+    virtual ~Shape() {}
+};
+
+// Concrete derived class: Circle
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(double r) : radius(r) {}
+
+    // Implementation of the pure virtual function
+    double calculateArea() const override {
+        return 3.14 * radius * radius; // Using a simple formula for circle area
+    }
+};
+
+// Concrete derived class: Rectangle
+class Rectangle : public Shape {
+private:
+    double length;
+    double width;
+
+public:
+    Rectangle(double l, double w) : length(l), width(w) {}
+
+    // Implementation of the pure virtual function
+    double calculateArea() const override {
+        return length * width; // Using a simple formula for rectangle area
+    }
+};
+
+int main() {
+    // Creating objects of the derived classes
+    Circle circle(5.0);
+    Rectangle rectangle(4.0, 6.0);
+
+    // Using polymorphism through pointers to the base class
+    Shape* shape1 = &circle;
+    Shape* shape2 = &rectangle;
+
+    // Calculating and displaying the areas
+    std::cout << "Circle Area: " << shape1->calculateArea() << std::endl;
+    std::cout << "Rectangle Area: " << shape2->calculateArea() << std::endl;
+
+    return 0;
+}
