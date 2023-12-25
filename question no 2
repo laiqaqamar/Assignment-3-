@@ -1,0 +1,97 @@
+#include <iostream>
+#include <string>
+
+class Product {
+public:
+    int productId;
+    std::string productName;
+    double price;
+
+    void displayProductDetails() const {
+        std::cout << "Product ID: " << productId << "\n";
+        std::cout << "Product Name: " << productName << "\n";
+        std::cout << "Price: $" << price << "\n";
+    }
+};
+
+class ShoppingCart {
+private:
+    Product* products;  // Dynamic array of products
+    int itemCount;
+    double totalCost;
+
+public:
+    ShoppingCart() : products(nullptr), itemCount(0), totalCost(0.0) {}
+
+    void addProduct(const Product& product) {
+        // Assuming product is added at the end of the array for simplicity
+        Product* newProducts = new Product[itemCount + 1];
+        
+        for (int i = 0; i < itemCount; ++i) {
+            newProducts[i] = products[i];
+        }
+
+        newProducts[itemCount] = product;
+
+        delete[] products;
+        products = newProducts;
+        itemCount++;
+        totalCost += product.price;
+    }
+
+    void displayAllProducts() const {
+        std::cout << "Products in the Shopping Cart:\n";
+        for (int i = 0; i < itemCount; ++i) {
+            products[i].displayProductDetails();
+            std::cout << "-----------------------------\n";
+        }
+        std::cout << "Total Cost: $" << totalCost << "\n";
+    }
+};
+
+class User {
+public:
+    int userId;
+    ShoppingCart* shoppingCart;  // Aggregation relationship
+
+    User(int id) : userId(id), shoppingCart(nullptr) {}
+
+    void displayUserDetails() const {
+        std::cout << "User ID: " << userId << "\n";
+        if (shoppingCart != nullptr) {
+            std::cout << "User has a shopping cart.\n";
+        } else {
+            std::cout << "User does not have a shopping cart.\n";
+        }
+    }
+
+    void addProductToCart(const Product& product) {
+        if (shoppingCart == nullptr) {
+            shoppingCart = new ShoppingCart();  // Composition relationship
+        }
+        shoppingCart->addProduct(product);
+    }
+};
+
+int main() {
+    // Example usage
+    Product product1 = {1, "Laptop", 1200.00};
+    Product product2 = {2, "Smartphone", 800.00};
+
+    User user1(101);
+    user1.displayUserDetails();
+
+    user1.addProductToCart(product1);
+    user1.addProductToCart(product2);
+
+    user1.displayUserDetails();
+
+    if (user1.shoppingCart != nullptr) {
+        user1.shoppingCart->displayAllProducts();
+    }
+
+    // Clean up dynamically allocated memory
+    delete user1.shoppingCart;
+
+    return 0;
+}
